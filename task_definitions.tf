@@ -4,20 +4,20 @@ resource "aws_ecs_task_definition" "main" {
   network_mode = "awsvpc"
 
   requires_compatibilities = var.capabilities
-  cpu = var.service_cpu
-  memory = var.service_memory
+  cpu                      = var.service_cpu
+  memory                   = var.service_memory
 
   execution_role_arn = aws_iam_role.service_execution_role.arn
-  task_role_arn = var.service_task_execution_role
+  task_role_arn      = var.service_task_execution_role
 
   container_definitions = jsonencode([
     {
-    name = var.service_name
-    image = format("%s:latest", aws_ecr_repository.main.repository_url)
-    cpu = var.service_cpu
-    memory = var.service_memory
+      name   = var.service_name
+      image  = format("%s:latest", aws_ecr_repository.main.repository_url)
+      cpu    = var.service_cpu
+      memory = var.service_memory
 
-    essential = true
+      essential = true
       portMappings = [
         {
           containerPort = var.service_port
