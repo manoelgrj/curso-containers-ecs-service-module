@@ -6,7 +6,7 @@ resource "aws_alb_listener_rule" "main" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.main.arn
+    target_group_arn = aws_alb_target_group.main[count.index].arn
   }
 
   condition {

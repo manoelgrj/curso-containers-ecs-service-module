@@ -48,7 +48,7 @@ variable "service_healthcheck" {
 }
 
 variable "environment_variables" {
-  type    = list(any)  
+  type = list(any)
 }
 
 variable "secrets" {
