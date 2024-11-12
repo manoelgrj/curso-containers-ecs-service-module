@@ -33,11 +33,20 @@ resource "aws_ecs_task_definition" "main" {
       memory = var.service_memory
 
       essential = true
+      #      portMappings = [
+      #        {
+      #          containerPort = var.service_port
+      #          hostPort      = var.service_port
+      #          protocol      = "tcp"
+      #        }
+      #      ]
       portMappings = [
         {
+          name          = var.service_name
           containerPort = var.service_port
           hostPort      = var.service_port
-          protocol      = "tcp"
+          protocol      = var.protocol
+          appProtocol   = var.service_protocol
         }
       ]
 
@@ -59,7 +68,7 @@ resource "aws_ecs_task_definition" "main" {
       ]
       environment = var.environment_variables
 
-      secrets     = var.secrets
+      secrets = var.secrets
     }
   ])
 }

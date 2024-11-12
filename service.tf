@@ -8,6 +8,34 @@ resource "aws_ecs_service" "main" {
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
 
+  dynamic "service_connect_configuration" {
+    for_each = var.use_service_connect ? [var.service_connect_name] : []
+
+    content {
+      enabled   = var.use_service_connect
+      namespace = var.service_connect_name
+
+      service {
+        port_name      = var.service_name
+        discovery_name = var.service_name
+
+        client_alias {
+          port     = var.service_port
+          dns_name = format("%s.%s", var.service_name, var.service_connect_name)
+        }
+      }
+
+    }
+  }
+
+  dynamic "service_registries" {
+    for_each = var.service_discovery_namespace != null ? [var.service_name] : []
+    content {
+      registry_arn   = aws_service_discovery_service.main[0].arn
+      container_name = service_registries.value
+    }
+  }
+
   deployment_circuit_breaker {
     enable   = true
     rollback = true
@@ -46,11 +74,21 @@ resource "aws_ecs_service" "main" {
     assign_public_ip = false
   }
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.main.arn
-    container_name   = var.service_name
-    container_port   = var.service_port
+  dynamic "load_balancer" {
+    for_each = var.use_lb ? [1] : []
+    content {
+      target_group_arn = aws_alb_target_group.main.arn
+      container_name   = var.service_name
+      container_port   = var.service_port
+    }
+
   }
+
+  #  load_balancer {
+  #    target_group_arn = aws_alb_target_group.main.arn
+  #    container_name   = var.service_name
+  #    container_port   = var.service_port
+  #  }
 
   lifecycle {
     ignore_changes = [

@@ -10,13 +10,19 @@ variable "vpc_id" {}
 
 variable "private_subnets" {}
 
-variable "service_port" {}
+variable "service_port" {
+  type = number
+}
 
 variable "service_cpu" {}
 
 variable "service_memory" {}
 
-variable "service_listener" {}
+variable "service_listener" {
+  type        = string
+  default     = null
+  description = "ARN do listener do Application Load Balancer que será usado pelo serviço."
+}
 
 variable "service_task_execution_role" {}
 
@@ -42,19 +48,20 @@ variable "service_healthcheck" {
 }
 
 variable "environment_variables" {
-  type = list(any)
+  type    = list(any)  
 }
 
 variable "secrets" {
   type = list(object({
-    name: string
-    valueFrom: string
+    name : string
+    valueFrom : string
   }))
   default = []
 }
 
 variable "capabilities" {
-  type = list(any)
+  type    = list(any)
+  default = []
 }
 
 variable "scale_type" {
@@ -151,4 +158,44 @@ variable "efs_volumes" {
     read_only : bool
   }))
   default = []
+}
+
+variable "service_discovery_namespace" {
+  default = null
+}
+
+variable "use_service_connect" {
+  description = "Habilita ou desabilita o uso do Service Connect."
+  type        = bool
+  default     = false
+}
+
+variable "use_lb" {
+  type    = bool
+  default = true
+}
+
+variable "service_connect_name" {
+  type    = string
+  default = null
+}
+
+variable "deployment_controller" {
+  type    = string
+  default = "ECS"
+}
+
+variable "service_protocol" {
+  type    = string
+  default = null
+}
+
+variable "service_connect_arn" {
+  type    = string
+  default = null
+}
+
+variable "protocol" {
+  type    = string
+  default = "tcp"
 }

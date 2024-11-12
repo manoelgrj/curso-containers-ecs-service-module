@@ -41,7 +41,7 @@ resource "aws_iam_role_policy" "service_execution_role" {
           "ssm:GetParameters",
           "secretsmanager:GetSecretValue",
           "ssm:GetParameters",
-          "secretsmanager:GetSecretValue"          
+          "secretsmanager:GetSecretValue"
         ],
         Resource = "*",
         Effect   = "Allow"
